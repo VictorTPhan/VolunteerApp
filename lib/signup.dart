@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:volunteer_app/helper.dart';
-import 'package:volunteer_app/requester_dash.dart';
+import 'package:volunteer_app/hospitality_dash.dart';
+import 'package:volunteer_app/hospitality_form.dart';
 import 'package:volunteer_app/volunteer_dash.dart';
+import 'package:volunteer_app/volunteer_form.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -15,7 +17,6 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController usernameController = TextEditingController();
   String type = "volunteer";
   bool validSignUp = true;
 
@@ -37,7 +38,6 @@ class _SignUpState extends State<SignUp> {
   Future<void> setInfo() async {
     FirebaseDatabase.instance.ref().child("Users").child(getUID()).set(
       {
-        "username" : usernameController.text,
         "type" : type
       }
     ).then((ret) {
@@ -51,13 +51,13 @@ class _SignUpState extends State<SignUp> {
     if (type == "volunteer") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const VolunteerDash()),
+        MaterialPageRoute(builder: (context) => const VolunteerForm()),
       );
     }
-    else if (type == "requester") {
+    else if (type == "hospitality") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const RequesterDash()),
+        MaterialPageRoute(builder: (context) => const HospitalityForm()),
       );
     }
   }
@@ -85,13 +85,6 @@ class _SignUpState extends State<SignUp> {
               hintText: 'Password',
             ),
           ),
-          TextField(
-            controller: usernameController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Username',
-            ),
-          ),
           ListTile(
             title: Text("Volunteer"),
             leading: Radio(
@@ -105,9 +98,9 @@ class _SignUpState extends State<SignUp> {
             ),
           ),
           ListTile(
-            title: Text("Requester"),
+            title: Text("Hospitality"),
             leading: Radio(
-              value: "requester",
+              value: "hospitality",
               groupValue: type,
               onChanged: (value) {
                 setState(() {

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:volunteer_app/helper.dart';
-import 'package:volunteer_app/requester_dash.dart';
+import 'package:volunteer_app/hospitality_dash.dart';
 import 'package:volunteer_app/signup.dart';
 import 'package:volunteer_app/volunteer_dash.dart';
 
@@ -43,7 +43,7 @@ class _LoginState extends State<Login> {
     else if (type == "requester") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const RequesterDash()),
+        MaterialPageRoute(builder: (context) => const HospitalityDash()),
       );
     }
   }
