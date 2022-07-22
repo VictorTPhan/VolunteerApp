@@ -40,7 +40,7 @@ class _LoginState extends State<Login> {
         MaterialPageRoute(builder: (context) => const VolunteerDash()),
       );
     }
-    else if (type == "requester") {
+    else if (type == "hospitality") {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const HospitalityDash()),

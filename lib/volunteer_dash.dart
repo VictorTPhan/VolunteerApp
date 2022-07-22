@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:volunteer_app/VolunteerInfo.dart';
+import 'package:volunteer_app/volunteer_info.dart';
 
 class VolunteerDash extends StatefulWidget {
   const VolunteerDash({Key? key}) : super(key: key);

@@ -2,38 +2,41 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-
-import 'helper.dart';
-class HospitalityInfo extends StatefulWidget {
-  const HospitalityInfo({Key? key}) : super(key: key);
+import 'package:volunteer_app/helper.dart';
+class VolunteerInfo extends StatefulWidget {
+  const VolunteerInfo({Key? key}) : super(key: key);
 
   @override
-  State<HospitalityInfo> createState() => _HospitalityInfoState();
+  State<VolunteerInfo> createState() => _VolunteerInfoState();
 }
 
-class _HospitalityInfoState extends State<HospitalityInfo> {
+class _VolunteerInfoState extends State<VolunteerInfo> {
   //stores user's name
   String userName = "";
   TextEditingController userNameController = new TextEditingController();
-
-  //stores user's description
-  String description = "";
-  TextEditingController descriptionController = new TextEditingController();
-
-  //stores user's address
-  String address = "";
-  TextEditingController addressController = new TextEditingController();
 
   //stores user's phone number
   String phoneNumber = "";
   String newPhoneNumber = "";
 
+  //stores user's age
+  String age = "";
+  TextEditingController ageController = new TextEditingController();
+
+  //stores user's instrument
+  String instrument = "";
+  TextEditingController instrumentController = new TextEditingController();
+
   //stores user's email
   String email = "";
   TextEditingController emailController = new TextEditingController();
 
+  //stores user's description
+  String description = "";
+  TextEditingController descriptionController = new TextEditingController();
+
   //constructors run before the screen is first loaded
-  _HospitalityInfoState() {
+  _VolunteerInfoState() {
     fetchData();
   }
 
@@ -41,7 +44,7 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
   // methods are chunks of code that perform specific tasks
   // this is a special method called an asynchronous method (a method that runs in the background)
   Future<void> fetchData() async {
-    await FirebaseDatabase.instance.ref().child("Hospitality").child(getUID()).once().
+    await FirebaseDatabase.instance.ref().child("Volunteers").child(getUID()).once().
     then((event) {
       var info = event.snapshot.value as Map;
 
@@ -49,10 +52,11 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
       setState(() {
         //reloaded page will have correct username
         userName = info["name"];
-        description = info ["description"];
-        address = info ["address"];
-        phoneNumber = info ["phone number"];
+        phoneNumber = info["phone number"];
+        age = info["age"];
+        instrument = info["instrument"];
         email = FirebaseAuth.instance.currentUser!.email.toString();
+        description = info["description"];
       });
     }).
     catchError((error) {
@@ -72,24 +76,30 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
             TextField(
               controller: userNameController,
               decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Username"
+                  border: OutlineInputBorder(),
+                  hintText: "Username"
               ),
             ),
             TextField(
               controller: descriptionController,
               maxLines: null,
               decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Description"
+                  border: OutlineInputBorder(),
+                  hintText: "Description"
               ),
             ),
             TextField(
-              controller: addressController,
-              maxLines: null,
+              controller: ageController,
               decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: "Address"
+                  hintText: "Age"
+              ),
+            ),
+            TextField(
+              controller: instrumentController,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "Instrument"
               ),
             ),
             TextField(
@@ -129,16 +139,17 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar (
-        title: Text ("Hospitality Info"),
+        title: Text ("Volunteer Info"),
       ),
       body: Center(
         child: Column (
           children: [
             Text(userName),
             Text(description),
-            Text("Address: " + address),
-            Text ("Phone Number: " + phoneNumber),
-            Text("Email: " + email)
+            Text("Age: " + age),
+            Text("Instrument(s): " + instrument),
+            Text("Phone Number: " + phoneNumber),
+            Text("Email: " + email),
           ],
         ),
       ),
@@ -154,3 +165,4 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
     );
   }
 }
+
