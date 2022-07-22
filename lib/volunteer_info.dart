@@ -11,6 +11,8 @@ class VolunteerInfo extends StatefulWidget {
 }
 
 class _VolunteerInfoState extends State<VolunteerInfo> {
+  bool formCompleted = true;
+
   //stores user's name
   String userName = "";
   TextEditingController userNameController = new TextEditingController();
@@ -29,7 +31,6 @@ class _VolunteerInfoState extends State<VolunteerInfo> {
 
   //stores user's email
   String email = "";
-  TextEditingController emailController = new TextEditingController();
 
   //stores user's description
   String description = "";
@@ -52,7 +53,7 @@ class _VolunteerInfoState extends State<VolunteerInfo> {
       setState(() {
         //reloaded page will have correct username
         userName = info["name"];
-        phoneNumber = info["phone number"];
+        phoneNumber = info["phone  number"];
         age = info["age"];
         instrument = info["instrument"];
         email = FirebaseAuth.instance.currentUser!.email.toString();
@@ -64,8 +65,43 @@ class _VolunteerInfoState extends State<VolunteerInfo> {
     });
   }
 
+  // methods are chunks of code that perform specific tasks
+  void validateForm() {
+    bool confirmed = false;
+    confirmed = userNameController.text.isNotEmpty;
+    confirmed = phoneNumber.isNotEmpty;
+    confirmed = ageController.text.isNotEmpty;
+    confirmed = instrumentController.text.isNotEmpty;
+    print(confirmed);
+
+    setState(() {
+      formCompleted = confirmed;
+    });
+  }
+
+  Future<void> updateInfo() async {
+    await FirebaseDatabase.instance.ref().child("Volunteers").child(getUID()).update(
+      {
+        "name": userNameController.text,
+        "description": descriptionController.text,
+        "age": ageController.text,
+        "instrument": instrumentController.text,
+        "phone  number": newPhoneNumber,
+      }
+    ).then((value) {
+      print("Info updated");
+    }).catchError((error) {
+      print("Could not update: " + error.toString());
+    });
+  }
+
   //shows a popup window to change user info
   Widget showEditPopUp(BuildContext context) {
+    userNameController.text = userName;
+    descriptionController.text = description;
+    ageController.text = age;
+    instrumentController.text = instrument;
+
     return SingleChildScrollView(
       child: AlertDialog(
         title: Text('Edit your profile'),
@@ -102,14 +138,8 @@ class _VolunteerInfoState extends State<VolunteerInfo> {
                   hintText: "Instrument"
               ),
             ),
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Email"
-              ),
-            ),
             IntlPhoneField(
+              initialValue: phoneNumber,
               decoration: InputDecoration(
                 labelText: 'Phone Number',
                 border: OutlineInputBorder(
@@ -125,6 +155,9 @@ class _VolunteerInfoState extends State<VolunteerInfo> {
             ),
             ElevatedButton(
                 onPressed: () {
+                  updateInfo().then((value) {
+                    fetchData();
+                  });
                   Navigator.pop(context);
                 },
                 child: Text("Done")

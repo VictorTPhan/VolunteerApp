@@ -12,6 +12,8 @@ class HospitalityInfo extends StatefulWidget {
 }
 
 class _HospitalityInfoState extends State<HospitalityInfo> {
+  bool formCompleted = true;
+
   //stores user's name
   String userName = "";
   TextEditingController userNameController = new TextEditingController();
@@ -30,11 +32,36 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
 
   //stores user's email
   String email = "";
-  TextEditingController emailController = new TextEditingController();
 
   //constructors run before the screen is first loaded
   _HospitalityInfoState() {
     fetchData();
+  }
+
+  // methods are chunks of code that perform specific tasks
+  void validateForm() {
+    bool confirmed = false;
+    confirmed = userNameController.text.isNotEmpty;
+    confirmed = phoneNumber.isNotEmpty;
+    confirmed = addressController.text.isNotEmpty;
+
+    setState(() {
+      formCompleted = confirmed;
+    });
+  }
+  Future<void> updateInfo() async {
+    await FirebaseDatabase.instance.ref().child("Hospitality").child(getUID()).update(
+        {
+          "name": userNameController.text,
+          "description": descriptionController.text,
+          "address": addressController.text,
+          "phone  number": newPhoneNumber,
+        }
+    ).then((value) {
+      print("Info updated");
+    }).catchError((error) {
+      print("Could not update: " + error.toString());
+    });
   }
 
   // we will make a method to grab the information.
@@ -51,7 +78,7 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
         userName = info["name"];
         description = info ["description"];
         address = info ["address"];
-        phoneNumber = info ["phone number"];
+        phoneNumber = info ["phone  number"];
         email = FirebaseAuth.instance.currentUser!.email.toString();
       });
     }).
@@ -62,6 +89,10 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
 
   //shows a popup window to change user info
   Widget showEditPopUp(BuildContext context) {
+    userNameController.text = userName;
+    descriptionController.text = description;
+    addressController.text = address;
+
     return SingleChildScrollView(
       child: AlertDialog(
         title: Text('Edit your profile'),
@@ -92,14 +123,8 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
                   hintText: "Address"
               ),
             ),
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Email"
-              ),
-            ),
             IntlPhoneField(
+              initialValue: phoneNumber,
               decoration: InputDecoration(
                 labelText: 'Phone Number',
                 border: OutlineInputBorder(
@@ -115,6 +140,9 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
             ),
             ElevatedButton(
                 onPressed: () {
+                  updateInfo().then((value) {
+                    fetchData();
+                  });
                   Navigator.pop(context);
                 },
                 child: Text("Done")
