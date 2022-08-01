@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:volunteer_app/hospitality_event_upload.dart';
+import 'package:volunteer_app/hospitality_event_view.dart';
 import 'package:volunteer_app/hospitality_info.dart';
 
 class HospitalityDash extends StatefulWidget {
@@ -23,7 +25,7 @@ class _HospitalityState extends State<HospitalityDash> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const HospitalityInfo()),
+                  MaterialPageRoute(builder: (context) => const HospitalityEventView()),
                 );
               },
               child: Text("Viewing Events"),
@@ -35,10 +37,10 @@ class _HospitalityState extends State<HospitalityDash> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const HospitalityInfo()),
+                  MaterialPageRoute(builder: (context) => const HospitalityEventUpload()),
                 );
               },
-              child: Text("Finding Events"),
+              child: Text("Uploading Events"),
               style: ElevatedButton.styleFrom(
                 primary: Colors.green,
               ),
@@ -50,7 +52,7 @@ class _HospitalityState extends State<HospitalityDash> {
                   MaterialPageRoute(builder: (context) => const HospitalityInfo()),
                 );
               },
-              child: Text("Viewing User Info"),
+              child: Text("Viewing User Profile"),
               style: ElevatedButton.styleFrom(
                 primary: Colors.green,
               ),

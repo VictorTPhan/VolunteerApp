@@ -51,43 +51,70 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Login"),
-      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TextField(
-            controller: emailController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Email',
+          Expanded(
+            flex: 25,
+            child: Center(
+              child: Text(
+                  "APP NAME",
+                   style: TextStyle(
+                     fontSize: 50,
+                     fontWeight: FontWeight.bold
+                   ),
+              ),
             ),
           ),
-          TextField(
-            controller: passwordController,
-            obscureText: true,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Password',
+          Expanded(
+            flex: 25,
+            child: Column(
+              children: [
+                TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Email',
+                  ),
+                ),
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Password',
+                  ),
+                ),
+              ],
             ),
           ),
           if (!signInValid)
             Text("Could not sign you in"),
-          ElevatedButton(
-              onPressed: () {
-                signIn();
-              },
-              child: Text("Sign In")
+          Expanded(
+            flex: 25,
+            child: Column(
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      signIn();
+                    },
+                    child: Text("Sign In")
+                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SignUp()),
+                      );
+                    },
+                    child: Text("Create Account")
+                )
+              ],
+            ),
           ),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SignUp()),
-                );
-              },
-              child: Text("Sign Up")
+          Expanded(
+            flex: 25,
+              child: Container()
           )
         ],
       ),
