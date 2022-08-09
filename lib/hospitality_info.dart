@@ -162,11 +162,44 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
       body: Center(
         child: Column (
           children: [
-            Text(userName),
-            Text(description),
-            Text("Address: " + address),
-            Text ("Phone Number: " + phoneNumber),
-            Text("Email: " + email)
+            Expanded(
+              flex: 33,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                        height: 200,
+                        child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png")
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                          userName,
+                      ),
+                      Text(
+                        "Hospitality"
+                      )
+                    ],
+                  )
+                ],
+
+              ),
+            ),
+            Expanded(
+              flex: 67,
+              child: Column(
+                children: [
+                  Text(userName),
+                  Text(description),
+                  Text("Address: " + address),
+                  Text ("Phone Number: " + phoneNumber),
+                  Text("Email: " + email)
+                ],
+              ),
+            )
           ],
         ),
       ),

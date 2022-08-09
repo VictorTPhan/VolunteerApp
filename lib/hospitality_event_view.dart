@@ -22,7 +22,6 @@ class _HospitalityEventViewState extends State<HospitalityEventView> {
     await FirebaseDatabase.instance.ref().child("Events").child(getUID()).once().
     then((event) {
       var info = event.snapshot.value as Map;
-      List<dynamic> infoAsList;
 
       setState(() {
         info.forEach((key, value) {

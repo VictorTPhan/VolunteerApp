@@ -1,3 +1,4 @@
+import 'package:date_field/date_field.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:volunteer_app/helper.dart';
@@ -25,16 +26,18 @@ class _HospitalityEventPageState extends State<HospitalityEventPage> {
 
   TextEditingController nameController = new TextEditingController();
   TextEditingController descriptionController = new TextEditingController();
+  var newStartTime;
+  var newEndTime;
   TextEditingController locationController = new TextEditingController();
   TextEditingController requirementController = new TextEditingController();
   TextEditingController spotsController = new TextEditingController();
 
   _HospitalityEventPageState() {
-    fetchInfo();
+    fetchData();
   }
 
   //write a method that fetches information about an event given a timestamp
-  Future<void> fetchInfo() async {
+  Future<void> fetchData() async {
     await FirebaseDatabase.instance.ref().child("Events").child(getUID()).child(TimeStamp.timeStamp).once().
     then((event) {
       var info = event.snapshot.value as Map;
@@ -54,6 +57,12 @@ class _HospitalityEventPageState extends State<HospitalityEventPage> {
   }
 
   Widget showEditPopUp(BuildContext context) {
+    nameController.text = name;
+    descriptionController.text = description;
+    locationController.text = location;
+    requirementController.text = requirement;
+    spotsController.text = spots;
+
     return SingleChildScrollView(
       child: AlertDialog(
         title: Text('Edit your profile'),
@@ -76,6 +85,24 @@ class _HospitalityEventPageState extends State<HospitalityEventPage> {
                   hintText: "Description"
               ),
             ),
+            DateTimeField(
+                decoration: const InputDecoration(
+                    hintText: 'Start Date and Time'),
+                selectedDate: newStartTime,
+                onDateSelected: (DateTime value) {
+                  setState(() {
+                    newStartTime = value;
+                  });
+                }),
+            DateTimeField(
+                decoration: const InputDecoration(
+                    hintText: 'End Date and Time'),
+                selectedDate: newEndTime,
+                onDateSelected: (DateTime value) {
+                  setState(() {
+                    newEndTime = value;
+                  });
+                }),
             TextField(
               controller: locationController,
               decoration: const InputDecoration(
@@ -101,9 +128,9 @@ class _HospitalityEventPageState extends State<HospitalityEventPage> {
             ),
             ElevatedButton(
                 onPressed: () {
-                  //updateInfo().then((value) {
-                  //  fetchData();
-                  //});
+                  updateInfo().then((value) {
+                    fetchData();
+                  });
                   Navigator.pop(context);
                 },
                 child: Text("Done")
@@ -112,6 +139,29 @@ class _HospitalityEventPageState extends State<HospitalityEventPage> {
         ),
       ),
     );
+  }
+
+  Future<void> updateInfo() async {
+    DateTime sT = newStartTime as DateTime;
+    DateTime eT = newEndTime as DateTime;
+
+    await FirebaseDatabase.instance.ref().child("Events").child(getUID()).child(TimeStamp.timeStamp).update(
+      {
+        "name": nameController.text,
+        "description": descriptionController.text,
+        "start date": sT.day.toString() + "/" + sT.month.toString() + "/" + sT.year.toString(),
+        "start time": sT.hour.toString() + ":" + sT.minute.toString() + " " + sT.timeZoneName,
+        "end date": eT.day.toString() + "/" + eT.month.toString() + "/" + eT.year.toString(),
+        "end time": eT.hour.toString() + ":" + eT.minute.toString() + " " + eT.timeZoneName,
+        "location": locationController.text,
+        "requirement": requirementController.text,
+        "spots": spotsController.text,
+      }
+    ).then((value) {
+      print("Updated information");
+    }).catchError((error) {
+      print("Could not update: " + error.toString());
+    });
   }
 
   @override

@@ -65,55 +65,91 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Sign Up"),
-      ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TextField(
-            controller: emailController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Email',
+        Expanded(
+        flex: 30,
+        child: Center(
+          child: Text(
+            "APP NAME",
+            style: TextStyle(
+                fontSize: 50,
+                fontWeight: FontWeight.bold
             ),
           ),
-          TextField(
-            controller: passwordController,
-            obscureText: true,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Password',
+        ),
+      ),
+
+        Expanded(
+          flex: 20,
+          child:
+          Column(
+            children: [
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Email',
+                ),
+              ),
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Password',
+                ),
+              ),
+            ],
+          ),
+        ),
+
+          Expanded(
+            flex: 20,
+            child: Column(
+              children: [
+                ListTile(
+                  title: Text("Volunteer"),
+                  leading: Radio(
+                    value: "volunteer",
+                    groupValue: type,
+                    onChanged: (value) {
+                      setState(() {
+                        type = value.toString();
+                      });
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: Text("Hospitality"),
+                  leading: Radio(
+                    value: "hospitality",
+                    groupValue: type,
+                    onChanged: (value) {
+                      setState(() {
+                        type = value.toString();
+                      });
+                    },
+                  ),
+                ),
+                if (!validSignUp)
+                  Text("Could not sign up your account"),
+              ],
             ),
           ),
-          ListTile(
-            title: Text("Volunteer"),
-            leading: Radio(
-              value: "volunteer",
-              groupValue: type,
-              onChanged: (value) {
-                setState(() {
-                  type = value.toString();
-                });
-              },
+
+          Expanded(
+            flex: 5,
+            child: ElevatedButton(
+              onPressed: signUp,
+              child: Text("Sign Up"),
             ),
           ),
-          ListTile(
-            title: Text("Hospitality"),
-            leading: Radio(
-              value: "hospitality",
-              groupValue: type,
-              onChanged: (value) {
-                setState(() {
-                  type = value.toString();
-                });
-              },
-            ),
-          ),
-          if (!validSignUp)
-            Text("Could not sign up your account"),
-          ElevatedButton(
-            onPressed: signUp,
-            child: Text("Sign Up"),
+
+          Expanded(
+              flex: 25,
+              child: Container()
           )
         ],
       ),

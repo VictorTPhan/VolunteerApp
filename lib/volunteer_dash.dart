@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:volunteer_app/volunteer_event_find.dart';
+import 'package:volunteer_app/volunteer_event_view.dart';
 import 'package:volunteer_app/volunteer_info.dart';
 
 class VolunteerDash extends StatefulWidget {
@@ -23,7 +25,7 @@ class _VolunteerDashState extends State<VolunteerDash> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const VolunteerInfo()),
+                  MaterialPageRoute(builder: (context) => const VolunteerEventView()),
                 );
               },
               child: Text("Viewing Events"),
@@ -35,7 +37,7 @@ class _VolunteerDashState extends State<VolunteerDash> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const VolunteerInfo()),
+                  MaterialPageRoute(builder: (context) => const VolunteerEventFind()),
                 );
               },
               child: Text("Finding Events"),
