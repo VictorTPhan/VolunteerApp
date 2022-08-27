@@ -27,19 +27,6 @@ class _VolunteerFormState extends State<VolunteerForm> {
   //bool is true/false
   bool formCompleted = true;
 
-  // methods are chunks of code that perform specific tasks
-  void validateForm() {
-    bool confirmed = false;
-    confirmed = nameController.text.isNotEmpty;
-    confirmed = phoneNumber.isNotEmpty;
-    confirmed = ageController.text.isNotEmpty;
-    confirmed = instrumentController.text.isNotEmpty;
-
-    setState(() {
-      formCompleted = confirmed;
-    });
-  }
-
   //upload the data to firebase
   Future<void> updateInfo() async {
     await FirebaseDatabase.instance.ref().child("Volunteers").child(getUID()).set(
@@ -121,11 +108,20 @@ class _VolunteerFormState extends State<VolunteerForm> {
             Text("You must fill in all parts of the form!"),
           ElevatedButton(
               onPressed: () {
-                validateForm();
+                setState(() {
+                  formCompleted = validate(
+                    [
+                      nameController.text,
+                      ageController.text,
+                      instrumentController.text,
+                      phoneNumber
+                    ]
+                  );
 
-                if (formCompleted){
-                  updateInfo();
-                }
+                  if (formCompleted){
+                    updateInfo();
+                  }
+                });
               },
               child: Text("Complete")
           )

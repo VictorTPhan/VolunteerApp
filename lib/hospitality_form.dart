@@ -25,18 +25,6 @@ class _HospitalityFormState extends State<HospitalityForm> {
   //bool is true/false
   bool formCompleted = true;
 
-  // methods are chunks of code that perform specific tasks
-  void validateForm() {
-    bool confirmed = false;
-    confirmed = nameController.text.isNotEmpty;
-    confirmed = phoneNumber.isNotEmpty;
-    confirmed = addressController.text.isNotEmpty;
-
-    setState(() {
-      formCompleted = confirmed;
-    });
-  }
-
   //upload the data to firebase
   Future<void> updateInfo() async {
     await FirebaseDatabase.instance.ref().child("Hospitality").child(getUID()).set(
@@ -110,11 +98,19 @@ class _HospitalityFormState extends State<HospitalityForm> {
             Text("You must fill in required parts of the form!"),
           ElevatedButton(
               onPressed: () {
-                validateForm();
+                setState(() {
+                  formCompleted = validate(
+                      [
+                        nameController.text,
+                        addressController.text,
+                        phoneNumber
+                      ]
+                  );
 
-                if (formCompleted){
-                  updateInfo();
-                }
+                  if (formCompleted){
+                    updateInfo();
+                  }
+                });
               },
               child: Text("Complete")
           )

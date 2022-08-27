@@ -15,11 +15,14 @@ class HospitalityEventUpload extends StatefulWidget {
 class _HospitalityEventUploadState extends State<HospitalityEventUpload> {
   TextEditingController nameController = new TextEditingController();
   TextEditingController descriptionController = new TextEditingController();
+  var startDate;
   var startTime;
   var endTime;
   TextEditingController locationController = new TextEditingController();
   TextEditingController requirementController = new TextEditingController();
   TextEditingController spotsController = new TextEditingController();
+
+  bool formIsValid = true;
 
   Future<void> uploadForm() async {
     //Events
@@ -28,16 +31,16 @@ class _HospitalityEventUploadState extends State<HospitalityEventUpload> {
           //form data
 
     int timestamp = DateTime.now().millisecondsSinceEpoch;
+    DateTime sD = startDate as DateTime;
     DateTime sT = startTime as DateTime;
     DateTime eT = endTime as DateTime;
     await FirebaseDatabase.instance.ref().child("Events").child(getUID()).child(timestamp.toString()).set(
         {
           "name": nameController.text,
           "description": descriptionController.text,
-          "start date": sT.day.toString() + "/" + sT.month.toString() + "/" + sT.year.toString(),
-          "start time": sT.hour.toString() + ":" + sT.minute.toString() + " " + sT.timeZoneName,
-          "end date": eT.day.toString() + "/" + eT.month.toString() + "/" + eT.year.toString(),
-          "end time": eT.hour.toString() + ":" + eT.minute.toString() + " " + eT.timeZoneName,
+          "start date": DateFormat("MM/dd/yy").format(sD),
+          "start time": DateFormat("hh:mm").format(sT) + " " + sT.timeZoneName,
+          "end time": DateFormat("hh:mm").format(eT) + " " + sT.timeZoneName,
           "location": locationController.text,
           "requirement": requirementController.text,
           "spots": spotsController.text,
@@ -53,7 +56,7 @@ class _HospitalityEventUploadState extends State<HospitalityEventUpload> {
       print("Could not upload form: " + error.toString());
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,8 +82,20 @@ class _HospitalityEventUploadState extends State<HospitalityEventUpload> {
           ),
           DateTimeField(
               decoration: const InputDecoration(
-                  hintText: 'Start Date and Time'),
+                  hintText: 'Start Date'),
+              initialDate: DateTime.now(),
+              selectedDate: startDate,
+              mode: DateTimeFieldPickerMode.date,
+              onDateSelected: (DateTime value) {
+                setState(() {
+                  startDate = value;
+                });
+              }),
+          DateTimeField(
+              decoration: const InputDecoration(
+                  hintText: 'Start Time'),
               selectedDate: startTime,
+              mode: DateTimeFieldPickerMode.time,
               onDateSelected: (DateTime value) {
                 setState(() {
                   startTime = value;
@@ -88,8 +103,9 @@ class _HospitalityEventUploadState extends State<HospitalityEventUpload> {
               }),
           DateTimeField(
               decoration: const InputDecoration(
-                  hintText: 'End Date and Time'),
+                  hintText: 'End Time'),
               selectedDate: endTime,
+              mode: DateTimeFieldPickerMode.time,
               onDateSelected: (DateTime value) {
                 setState(() {
                   endTime = value;
@@ -118,11 +134,28 @@ class _HospitalityEventUploadState extends State<HospitalityEventUpload> {
                 labelText: "Spots"
             ),
           ),
+          if (formIsValid == false)
+            Text("Form not completed!")
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          uploadForm();
+          setState(() {
+            formIsValid = validate(
+                [
+                  nameController.text,
+                  descriptionController.text,
+                  locationController.text,
+                  requirementController.text,
+                  spotsController.text
+                ]
+            )
+            && validateDateTimes(startDate, startTime, endTime);
+            if (formIsValid)
+              {
+                uploadForm();
+              }
+          });
         },
         child: Icon(Icons.check),
       ),

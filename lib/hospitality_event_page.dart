@@ -1,5 +1,7 @@
+import 'package:date_field/date_field.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:volunteer_app/helper.dart';
 class HospitalityEventPage extends StatefulWidget {
   const HospitalityEventPage({Key? key}) : super(key: key);
@@ -28,9 +30,42 @@ class _HospitalityEventPageState extends State<HospitalityEventPage> {
   TextEditingController locationController = new TextEditingController();
   TextEditingController requirementController = new TextEditingController();
   TextEditingController spotsController = new TextEditingController();
+  var newStartDate;
+  var newStartTime;
+  var newEndTime;
+
+  bool formIsValid = true;
 
   _HospitalityEventPageState() {
     fetchInfo();
+  }
+
+  Future<void> uploadForm() async {
+    //Events
+    //UID
+    //timestamp
+    //form data
+
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    DateTime sD = newStartDate as DateTime;
+    DateTime sT = newStartTime as DateTime;
+    DateTime eT = newEndTime as DateTime;
+    await FirebaseDatabase.instance.ref().child("Events").child(getUID()).child(timestamp.toString()).set(
+        {
+          "name": nameController.text,
+          "description": descriptionController.text,
+          "start date": DateFormat("MM/dd/yy").format(sD),
+          "start time": DateFormat("hh:mm").format(sT) + " " + sT.timeZoneName,
+          "end time": DateFormat("hh:mm").format(eT) + " " + sT.timeZoneName,
+          "location": locationController.text,
+          "requirement": requirementController.text,
+          "spots": spotsController.text,
+        }).then((value) {
+      print("Uploaded form successfully");
+      fetchInfo();
+    }).catchError((error) {
+      print("Could not upload form: " + error.toString());
+    });
   }
 
   //write a method that fetches information about an event given a timestamp
@@ -54,9 +89,15 @@ class _HospitalityEventPageState extends State<HospitalityEventPage> {
   }
 
   Widget showEditPopUp(BuildContext context) {
+    nameController.text = name;
+    descriptionController.text = description;
+    locationController.text = location;
+    requirementController.text = requirement;
+    spotsController.text = spots;
+
     return SingleChildScrollView(
       child: AlertDialog(
-        title: Text('Edit your profile'),
+        title: Text('Edit Event Info'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,6 +117,37 @@ class _HospitalityEventPageState extends State<HospitalityEventPage> {
                   hintText: "Description"
               ),
             ),
+            DateTimeField(
+                decoration: const InputDecoration(
+                    hintText: 'Start Date'),
+                initialDate: DateTime.now(),
+                selectedDate: newStartDate,
+                mode: DateTimeFieldPickerMode.date,
+                onDateSelected: (DateTime value) {
+                  setState(() {
+                    newStartDate = value;
+                  });
+                }),
+            DateTimeField(
+                decoration: const InputDecoration(
+                    hintText: 'Start Time'),
+                selectedDate: newStartTime,
+                mode: DateTimeFieldPickerMode.time,
+                onDateSelected: (DateTime value) {
+                  setState(() {
+                    newStartTime = value;
+                  });
+                }),
+            DateTimeField(
+                decoration: const InputDecoration(
+                    hintText: 'End Time'),
+                selectedDate: newEndTime,
+                mode: DateTimeFieldPickerMode.time,
+                onDateSelected: (DateTime value) {
+                  setState(() {
+                    newEndTime = value;
+                  });
+                }),
             TextField(
               controller: locationController,
               decoration: const InputDecoration(
@@ -99,12 +171,26 @@ class _HospitalityEventPageState extends State<HospitalityEventPage> {
                   hintText: "Spots"
               ),
             ),
+            if (formIsValid == false)
+              Text("Form not completed!"),
             ElevatedButton(
                 onPressed: () {
-                  //updateInfo().then((value) {
-                  //  fetchData();
-                  //});
-                  Navigator.pop(context);
+                  setState(() {
+                    formIsValid = validate(
+                        [
+                          nameController.text,
+                          descriptionController.text,
+                          locationController.text,
+                          requirementController.text,
+                          spotsController.text
+                        ]
+                    ) && validateDateTimes(newStartDate, newStartTime, newEndTime);
+                    if (formIsValid)
+                    {
+                      uploadForm();
+                      Navigator.pop(context);
+                    }
+                  });
                 },
                 child: Text("Done")
             )
