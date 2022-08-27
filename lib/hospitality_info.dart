@@ -55,7 +55,7 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
           "name": userNameController.text,
           "description": descriptionController.text,
           "address": addressController.text,
-          "phone  number": newPhoneNumber,
+          "phone number": newPhoneNumber,
         }
     ).then((value) {
       print("Info updated");
@@ -78,7 +78,7 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
         userName = info["name"];
         description = info ["description"];
         address = info ["address"];
-        phoneNumber = info ["phone  number"];
+        phoneNumber = info ["phone number"];
         email = FirebaseAuth.instance.currentUser!.email.toString();
       });
     }).

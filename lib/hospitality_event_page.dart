@@ -26,6 +26,7 @@ class _HospitalityEventPageState extends State<HospitalityEventPage> {
 
   TextEditingController nameController = new TextEditingController();
   TextEditingController descriptionController = new TextEditingController();
+  var newStartDate;
   var newStartTime;
   var newEndTime;
   TextEditingController locationController = new TextEditingController();

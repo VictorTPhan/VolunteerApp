@@ -53,7 +53,7 @@ class _VolunteerInfoState extends State<VolunteerInfo> {
       setState(() {
         //reloaded page will have correct username
         userName = info["name"];
-        phoneNumber = info["phone  number"];
+        phoneNumber = info["phone number"];
         age = info["age"];
         instrument = info["instrument"];
         email = FirebaseAuth.instance.currentUser!.email.toString();
@@ -86,7 +86,7 @@ class _VolunteerInfoState extends State<VolunteerInfo> {
         "description": descriptionController.text,
         "age": ageController.text,
         "instrument": instrumentController.text,
-        "phone  number": newPhoneNumber,
+        "phone number": newPhoneNumber,
       }
     ).then((value) {
       print("Info updated");

@@ -21,40 +21,56 @@ class _VolunteerDashState extends State<VolunteerDash> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const VolunteerEventView()),
-                );
-              },
-              child: Text("Viewing Events"),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.green,
+
+            Expanded(
+              flex: 70,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const VolunteerEventView()),
+                        );
+                      },
+                      child: Text("Viewing Events"),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.green,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const VolunteerEventFind()),
+                        );
+                      },
+                      child: Text("Finding Events"),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.green,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const VolunteerEventFind()),
-                );
-              },
-              child: Text("Finding Events"),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.green,
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const VolunteerInfo()),
-                );
-              },
-              child: Text("Viewing User Info"),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.green,
+
+            Expanded(
+              flex: 30,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const VolunteerInfo()),
+                  );
+                },
+                child: Text("Viewing User Info"),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green,
+                ),
               ),
             ),
           ],
