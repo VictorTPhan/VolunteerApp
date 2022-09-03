@@ -47,55 +47,110 @@ class _VolunteerEventPageState extends State<VolunteerEventPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    const TextStyle label = TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+    );
+
+    const TextStyle info = TextStyle(
+      fontSize: 16
+    );
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(EventToLookUp.lookup.timeStamp),
+        title: Text(name),
       ),
       body: Center(
         child: Column(
           children: [
             Text(
-              name,
+                "Hosted by: ____",
               style: TextStyle(
-                fontSize: 40,
+                fontSize: 20,
               ),
             ),
-            Text(
-              description,
-              style: TextStyle(
-                  fontSize: 18
-              ),
+            Expanded(
+              flex: 25,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: double.infinity,
+                    color: Colors.lightBlueAccent[100],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            "Description",
+                            style: label
+                        ),
+                        Text(
+                            "        " + description,
+                               style: info
+                        ),
+                      ],
+                    ),
+                  ),
+                )
             ),
-            Text(
-              startDate,
-              style: TextStyle(
-                  fontSize: 18
-              ),
+            Expanded(
+                flex: 25,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: double.infinity,
+                    color: Colors.lightBlueAccent[100],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Requirement",
+                          style: label
+                        ),
+                        Text(
+                          requirement,
+                          style: info
+                        ),
+                      ],
+                    ),
+                  ),
+                )
             ),
-            Text(
-              startTime + " to " + endTime,
-              style: TextStyle (
-                  fontSize: 18
-              ),
+            Expanded(
+                flex: 25,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: double.infinity,
+                    color: Colors.lightBlueAccent[100],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "General Information",
+                          style: label,
+                        ),
+                        Text(
+                            startDate,
+                            style: info,
+                        ),
+                        Text(
+                          startTime + " to " + endTime,
+                          style: info,
+                        ),
+                        Text(
+                            location,
+                            style: info,
+                        ),
+                        Text(
+                            "spots: " + spots,
+                          style: info,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             ),
-            Text(
-              "Location: " + location,
-              style: TextStyle(
-                  fontSize: 18
-              ),
-            ),
-            Text(
-              "Requirements: " + requirement,
-              style: TextStyle(
-                  fontSize: 18
-              ),
-            ),
-            Text(
-              "Spots Needed: " + spots,
-              style: TextStyle(
-                  fontSize: 18
-              ),
-            )
           ],
         ),
       ),
