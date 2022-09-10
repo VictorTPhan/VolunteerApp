@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:volunteer_app/helper.dart';
 import 'package:volunteer_app/volunteer_event_page.dart';
+import 'package:volunteer_app/volunteer_past_event.dart';
 
 class VolunteerEventView extends StatefulWidget {
   const VolunteerEventView({Key? key}) : super(key: key);
@@ -25,6 +26,9 @@ class _VolunteerEventViewState extends State<VolunteerEventView> {
   }
 
   Future<void> fetchSignedUpEvents() async {
+    int currentTime = DateTime.now().millisecondsSinceEpoch;
+    List<EventLookup> unfilteredEvents = [];
+
     await FirebaseDatabase.instance.ref().child("Signups").child(getUID()).once().
     then((event) async {
       var users = event.snapshot.value as Map;
@@ -35,58 +39,78 @@ class _VolunteerEventViewState extends State<VolunteerEventView> {
 
         //for each timestamp
         eventList.forEach((timestamp, value) {
-          //add timestamp to list
-          setState(() {
-            eventLookups.add(EventLookup(timestamp, UID));
-            print(timestamp + " " + UID);
-          });
+          unfilteredEvents.add(EventLookup(timestamp, UID));
+          print(timestamp + " " + UID);
         });
       });
     }).catchError((error) {
-      print("Could not grab events: " + error.toString());
+      print("could not look at event:" + error.toString());
     });
 
-    for(EventLookup eventLookup in eventLookups)
-      {
-        await fetchEventData(eventLookup.UID, eventLookup.timeStamp);
-      }
+    for(EventLookup eventLookup in unfilteredEvents)
+    {
+      await fetchEventData(eventLookup.UID, eventLookup.timeStamp);
+    }
   }
 
   Future<void> fetchEventData(String UID, String timeStamp) async {
     var eventInformation;
+    int currentTime = DateTime.now().millisecondsSinceEpoch;
+    bool fitsCriteria = false;
 
     await FirebaseDatabase.instance.ref().child("Events").child(UID).child(timeStamp).once().
     then((event) {
       var info = event.snapshot.value as Map;
 
-      eventInformation = EventInformation(
-        info["description"],
-        info["end time"],
-        info["location"],
-        info["name"],
-        info["requirement"],
-        info["spots"],
-        info["start date"],
-        info["start time"],
-        0,
-      );
-      print(info["name"]);
+      //the event ended at (event start date + event end time)
+      String startDateString = info["start date"].toString();
+      var splitStartDate = startDateString.split("/");
+      startDateString = "20" + splitStartDate[2] + "-" + splitStartDate[0] + "-" + splitStartDate[1];
+
+      String endTimeString = info["end time"].toString();
+      endTimeString = endTimeString.substring(0, 5);
+      endTimeString += ":00";
+
+      DateTime eventEndTime = DateTime.parse(startDateString + " " + endTimeString);
+
+      //what we want
+      if (eventEndTime.millisecondsSinceEpoch >= currentTime)
+      {
+        eventInformation = EventInformation(
+          info["description"],
+          info["end time"],
+          info["location"],
+          info["name"],
+          info["requirement"],
+          info["spots"],
+          info["start date"],
+          info["start time"],
+          0,
+        );
+        print(info["name"]);
+        fitsCriteria = true;
+      }
     }).catchError((error) {
-      print("Could not grab event information: " + error.toString());
+      print("Could not fetch data for event: " + error.toString());
     });
 
-    //does it have any volunteers?
-    await FirebaseDatabase.instance.ref().child("Events").child(UID).child(timeStamp).child("volunteers").once().
-    then((event) {
-      var info = event.snapshot.value as Map;
-      eventInformation.volunteers = info.length;
-    }).catchError((error) {
-      print("There are no volunteers for: " + UID + " " + timeStamp);
-    });
+    if (fitsCriteria)
+    {
+      //does it have any volunteers?
+      await FirebaseDatabase.instance.ref().child("Events").child(UID).child(timeStamp).child("volunteers").once().
+      then((event) {
+        var info = event.snapshot.value as Map;
+        eventInformation.volunteers = info.length;
+      }).catchError((error) {
+        print("There are no volunteers for: " + UID + " " + timeStamp);
+      });
 
-    setState(() {
-      eventInfo.add(eventInformation);
-    });
+      //look up the event at the specified timestamp
+      setState(() {
+        eventLookups.add(EventLookup(timeStamp, UID));
+        eventInfo.add(eventInformation);
+      });
+    }
   }
 
   Future<void> leaveEvent(EventLookup lookup, int index) async {
@@ -175,6 +199,15 @@ class _VolunteerEventViewState extends State<VolunteerEventView> {
           );
         },
         separatorBuilder: (BuildContext context, int index) => const Divider(),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const VolunteerPastEvent()),
+          );
+        },
+        child: Icon(Icons.remove_red_eye_outlined),
       ),
     );
   }
