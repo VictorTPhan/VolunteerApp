@@ -59,6 +59,7 @@ class _VolunteerDashState extends State<VolunteerDash> {
   Future<void> fetchEventData(String UID, String timeStamp) async {
     var eventInformation;
     int currentTime = DateTime.now().millisecondsSinceEpoch;
+    DateTime eventEndTime = DateTime(0);
     bool fitsCriteria = false;
 
     await FirebaseDatabase.instance.ref().child("Events").child(UID).child(timeStamp).once().
@@ -74,14 +75,11 @@ class _VolunteerDashState extends State<VolunteerDash> {
       endTimeString = endTimeString.substring(0, 5);
       endTimeString += ":00";
 
-      DateTime eventEndTime = DateTime.parse(startDateString + " " + endTimeString);
+      eventEndTime = DateTime.parse(startDateString + " " + endTimeString);
 
       //what we want
       if (eventEndTime.millisecondsSinceEpoch >= currentTime)
       {
-        Duration difference = eventEndTime.difference(DateTime.now());
-        print(difference.inDays);
-
         eventInformation = EventInformation(
           info["description"],
           info["end time"],
@@ -115,6 +113,7 @@ class _VolunteerDashState extends State<VolunteerDash> {
       setState(() {
         eventLookups.add(EventLookup(timeStamp, UID));
         eventInfo.add(eventInformation);
+        upcomingTimes.add(eventEndTime.difference(DateTime.now()).inDays);
       });
     }
   }
@@ -200,23 +199,9 @@ class _VolunteerDashState extends State<VolunteerDash> {
                           ),
                         ),
                         Text(
-                          eventInfo[index].startDate + ", from " + eventInfo[index].startTime + " to " + eventInfo[index].endTime,
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                        Text(
-                          "Location: " + eventInfo[index].location,
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                        Text(
-                          "Volunteers: " + eventInfo[index].volunteers.toString() + "/" + eventInfo[index].spots.toString(),
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
+                          upcomingTimes[index] == 0? "Today": "In " + upcomingTimes[index].toString() + " days",
+
+                        )
                       ],
                     ),
                   );
