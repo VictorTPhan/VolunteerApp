@@ -118,7 +118,28 @@ class VolunteerData
       );
 }
 
+class HospitalityData {
+  String UID;
+  String name;
+  String description;
+  String phoneNumber;
+  String address;
+
+  HospitalityData(
+      this.UID,
+      this.name,
+      this.description,
+      this.phoneNumber,
+      this.address,
+      );
+}
+
 class VolunteerToLookUp
 {
   static String volunteerUID = "";
+}
+
+class HospitalityToLookUp
+{
+  static String hospitalityUID = "";
 }

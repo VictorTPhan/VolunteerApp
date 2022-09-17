@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:volunteer_app/helper.dart';
 import 'package:volunteer_app/hospitality_event_upload.dart';
 import 'package:volunteer_app/hospitality_event_view.dart';
 import 'package:volunteer_app/hospitality_info.dart';
@@ -47,12 +48,13 @@ class _HospitalityState extends State<HospitalityDash> {
             ),
             ElevatedButton(
               onPressed: () {
+                HospitalityToLookUp.hospitalityUID = getUID();
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const HospitalityInfo()),
                 );
               },
-              child: Text("Viewing User Profile"),
+              child: Text("View Profile"),
               style: ElevatedButton.styleFrom(
                 primary: Colors.green,
               ),

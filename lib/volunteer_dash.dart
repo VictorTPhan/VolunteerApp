@@ -160,6 +160,7 @@ class _VolunteerDashState extends State<VolunteerDash> {
                     ),
                     ElevatedButton(
                       onPressed: () {
+                        VolunteerToLookUp.volunteerUID = getUID();
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const VolunteerInfo()),

@@ -3,73 +3,28 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:volunteer_app/helper.dart';
-class VolunteerInfo extends StatefulWidget {
+import 'package:volunteer_app/volunteer_public_profile.dart';
+class VolunteerInfo extends VolunteerPublicProfile {
   const VolunteerInfo({Key? key}) : super(key: key);
 
   @override
-  State<VolunteerInfo> createState() => _VolunteerInfoState();
+  State<VolunteerPublicProfile> createState() => _VolunteerInfoState();
 }
 
-class _VolunteerInfoState extends State<VolunteerInfo> {
+class _VolunteerInfoState extends VolunteerPublicProfileState {
   bool formCompleted = true;
 
-  //stores user's name
-  String userName = "";
   TextEditingController userNameController = new TextEditingController();
-
-  //stores user's phone number
-  String phoneNumber = "";
   String newPhoneNumber = "";
-
-  //stores user's age
-  String age = "";
   TextEditingController ageController = new TextEditingController();
-
-  //stores user's instrument
-  String instrument = "";
   TextEditingController instrumentController = new TextEditingController();
-
-  //stores user's email
-  String email = "";
-
-  //stores user's description
-  String description = "";
   TextEditingController descriptionController = new TextEditingController();
-
-  //constructors run before the screen is first loaded
-  _VolunteerInfoState() {
-    fetchData();
-  }
-
-  // we will make a method to grab the information.
-  // methods are chunks of code that perform specific tasks
-  // this is a special method called an asynchronous method (a method that runs in the background)
-  Future<void> fetchData() async {
-    await FirebaseDatabase.instance.ref().child("Volunteers").child(getUID()).once().
-    then((event) {
-      var info = event.snapshot.value as Map;
-
-      // setState reloads the page with new information
-      setState(() {
-        //reloaded page will have correct username
-        userName = info["name"];
-        phoneNumber = info["phone number"];
-        age = info["age"];
-        instrument = info["instrument"];
-        email = FirebaseAuth.instance.currentUser!.email.toString();
-        description = info["description"];
-      });
-    }).
-    catchError((error) {
-      print("Could not grab information: " + error.toString());
-    });
-  }
 
   // methods are chunks of code that perform specific tasks
   void validateForm() {
     bool confirmed = false;
     confirmed = userNameController.text.isNotEmpty;
-    confirmed = phoneNumber.isNotEmpty;
+    confirmed = newPhoneNumber.isNotEmpty;
     confirmed = ageController.text.isNotEmpty;
     confirmed = instrumentController.text.isNotEmpty;
     print(confirmed);
@@ -97,10 +52,10 @@ class _VolunteerInfoState extends State<VolunteerInfo> {
 
   //shows a popup window to change user info
   Widget showEditPopUp(BuildContext context) {
-    userNameController.text = userName;
-    descriptionController.text = description;
-    ageController.text = age;
-    instrumentController.text = instrument;
+    userNameController.text = volunteerData.name;
+    descriptionController.text = volunteerData.description;
+    ageController.text = volunteerData.age.toString();
+    instrumentController.text = volunteerData.instrument;
 
     return SingleChildScrollView(
       child: AlertDialog(
@@ -139,7 +94,7 @@ class _VolunteerInfoState extends State<VolunteerInfo> {
               ),
             ),
             IntlPhoneField(
-              initialValue: phoneNumber,
+              initialValue: volunteerData.phoneNumber,
               decoration: InputDecoration(
                 labelText: 'Phone Number',
                 border: OutlineInputBorder(
@@ -174,104 +129,7 @@ class _VolunteerInfoState extends State<VolunteerInfo> {
       appBar: AppBar (
         title: Text ("Volunteer Info"),
       ),
-      body: Column (
-        children: [
-          Expanded(
-              flex: 25,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Container(
-                      height: 150,
-                      child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png")
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                            userName,
-                            style: TextStyle(
-                                fontSize: 33,
-                                fontWeight: FontWeight.bold
-                            )
-                        ),
-                        Text(
-                            "volunteer",
-                             style: TextStyle(
-                               fontSize: 24
-                             ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-          ),
-          Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Divider(
-                    color: Colors.black,
-                    height: 27,
-                    thickness: 1.8,
-                  ),
-                  Text(
-                    "age: "+age,
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  Divider(
-                    color: Colors.black,
-                    height: 27,
-                    thickness: 1.8,
-                  ),
-                  Text(
-                    "email: "+email,
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  Divider(
-                    color: Colors.black,
-                      height: 27,
-                    thickness: 1.8,
-                  ),
-                  Text(
-                      "phone number: "+phoneNumber,
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  Divider(
-                    color: Colors.black,
-                      height: 27,
-                      thickness: 1.8,
-                  ),
-                  Text("instrument: "+instrument,
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  Divider(
-                    color: Colors.black,
-                    height: 27,
-                    thickness: 1.8,
-                  ),
-                  Text(description,
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
-              flex: 75,
-          ),
-        ],
-      ),
+      body: profileBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(

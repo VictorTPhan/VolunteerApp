@@ -40,17 +40,6 @@ class _HospitalityEventViewState extends State<HospitalityEventView> {
     }
   }
 
-  Widget showVolunteersPopUp(BuildContext context) {
-    return SingleChildScrollView(
-      child: AlertDialog(
-        title: Text('Edit Event Info'),
-        content: Column(
-
-        ),
-      ),
-    );
-  }
-
   Future<void> fetchEventData(String timeStamp) async {
     var eventInformation;
 
@@ -84,10 +73,46 @@ class _HospitalityEventViewState extends State<HospitalityEventView> {
     });
 
     setState(() {
-      eventInfo.add(eventInformation);
+      if (eventInformation != null) eventInfo.add(eventInformation);
     });
   }
-  
+
+  Future<void> deleteEvent(int timeStamp) async{
+    await FirebaseDatabase.instance.ref().child("Events").child(getUID()).child(timeStamp.toString()).remove().then((value) async{
+      setState(() {
+        eventInfo.clear();
+      });
+      await fetchEventInfo();
+    });
+  }
+
+  Widget askDeletionPermission(BuildContext context, int timeStamp) {
+    return SingleChildScrollView(
+      child: AlertDialog(
+        title: Text('Are you sure you want to delete this event?'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ElevatedButton(
+                onPressed: () {
+                  deleteEvent(timeStamp);
+                  Navigator.pop(context);
+                },
+                child: Text("Yes")
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("No")
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,6 +158,7 @@ class _HospitalityEventViewState extends State<HospitalityEventView> {
                       ElevatedButton(
                           onPressed: () {
                             TimeStamp.timeStamp = timeStamps[index].toString();
+                            EventToLookUp.lookup = EventLookup(timeStamps[index].toString(), getUID());
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => HospitalityEventPage()),
@@ -150,6 +176,15 @@ class _HospitalityEventViewState extends State<HospitalityEventView> {
                             );
                           },
                           child: Text("Check Signups")
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) => askDeletionPermission(context, timeStamps[index]),
+                            );
+                          },
+                          child: Text("Delete Event")
                       ),
                     ],
                   )

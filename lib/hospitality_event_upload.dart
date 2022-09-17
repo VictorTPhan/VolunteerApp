@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:volunteer_app/helper.dart';
+import 'package:volunteer_app/hospitality_event_view.dart';
 
 import 'hospitality_dash.dart';
 class HospitalityEventUpload extends StatefulWidget {
@@ -50,7 +51,7 @@ class _HospitalityEventUploadState extends State<HospitalityEventUpload> {
        //navigate back to the dashboard page for hospitality members
        Navigator.push(
          context,
-         MaterialPageRoute(builder: (context) => const HospitalityDash()),
+         MaterialPageRoute(builder: (context) => const HospitalityEventView()),
        );
     }).catchError((error) {
       print("Could not upload form: " + error.toString());

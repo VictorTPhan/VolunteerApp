@@ -2,36 +2,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:volunteer_app/hospitality_public_profile.dart';
 
 import 'helper.dart';
-class HospitalityInfo extends StatefulWidget {
+class HospitalityInfo extends HospitalityPublicProfile {
   const HospitalityInfo({Key? key}) : super(key: key);
 
   @override
-  State<HospitalityInfo> createState() => _HospitalityInfoState();
+  State<HospitalityPublicProfile> createState() => _HospitalityInfoState();
 }
 
-class _HospitalityInfoState extends State<HospitalityInfo> {
+class _HospitalityInfoState extends HospitalityPublicProfileState {
   bool formCompleted = true;
 
-  //stores user's name
-  String userName = "";
   TextEditingController userNameController = new TextEditingController();
-
-  //stores user's description
-  String description = "";
   TextEditingController descriptionController = new TextEditingController();
-
-  //stores user's address
-  String address = "";
   TextEditingController addressController = new TextEditingController();
-
-  //stores user's phone number
-  String phoneNumber = "";
   String newPhoneNumber = "";
-
-  //stores user's email
-  String email = "";
 
   //constructors run before the screen is first loaded
   _HospitalityInfoState() {
@@ -42,7 +29,7 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
   void validateForm() {
     bool confirmed = false;
     confirmed = userNameController.text.isNotEmpty;
-    confirmed = phoneNumber.isNotEmpty;
+    confirmed = newPhoneNumber.isNotEmpty;
     confirmed = addressController.text.isNotEmpty;
 
     setState(() {
@@ -64,34 +51,11 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
     });
   }
 
-  // we will make a method to grab the information.
-  // methods are chunks of code that perform specific tasks
-  // this is a special method called an asynchronous method (a method that runs in the background)
-  Future<void> fetchData() async {
-    await FirebaseDatabase.instance.ref().child("Hospitality").child(getUID()).once().
-    then((event) {
-      var info = event.snapshot.value as Map;
-
-      // setState reloads the page with new information
-      setState(() {
-        //reloaded page will have correct username
-        userName = info["name"];
-        description = info ["description"];
-        address = info ["address"];
-        phoneNumber = info ["phone number"];
-        email = FirebaseAuth.instance.currentUser!.email.toString();
-      });
-    }).
-    catchError((error) {
-      print("Could not grab information: " + error.toString());
-    });
-  }
-
   //shows a popup window to change user info
   Widget showEditPopUp(BuildContext context) {
-    userNameController.text = userName;
-    descriptionController.text = description;
-    addressController.text = address;
+    userNameController.text = hospitalityData.name;
+    descriptionController.text = hospitalityData.description;
+    addressController.text = hospitalityData.address;
 
     return SingleChildScrollView(
       child: AlertDialog(
@@ -124,7 +88,7 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
               ),
             ),
             IntlPhoneField(
-              initialValue: phoneNumber,
+              initialValue: hospitalityData.phoneNumber.toString(),
               decoration: InputDecoration(
                 labelText: 'Phone Number',
                 border: OutlineInputBorder(
@@ -156,20 +120,10 @@ class _HospitalityInfoState extends State<HospitalityInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar (
-        title: Text ("Hospitality Info"),
+      appBar: AppBar(
+        title: Text("Hospitality Info"),
       ),
-      body: Center(
-        child: Column (
-          children: [
-            Text(userName),
-            Text(description),
-            Text("Address: " + address),
-            Text ("Phone Number: " + phoneNumber),
-            Text("Email: " + email)
-          ],
-        ),
-      ),
+      body: profileBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
