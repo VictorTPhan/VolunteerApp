@@ -53,7 +53,24 @@ class _VolunteerEventViewState extends State<VolunteerEventView> {
     }
   }
 
+  Future<bool> seeIfEventExists(String UID, String timeStamp) async {
+    var result = await FirebaseDatabase.instance.ref().child("Events").child(UID).child(timeStamp).once();
+    return result.snapshot.value != null;
+  }
+
   Future<void> fetchEventData(String UID, String timeStamp) async {
+    //if event doesn't exist, don't bother
+    bool eventExists = await seeIfEventExists(UID, timeStamp);
+    if (eventExists == false) {
+      //remove event UID/timeStamp from your signUps
+      await FirebaseDatabase.instance.ref().child("Signups").child(getUID()).child(UID).child(timeStamp).remove().
+      then((value) {
+        print("removed nonexistent event from sign up list");
+      }).catchError((error) {
+        print("Could not remove nonexistent event: " + error.toString());
+      });
+    };
+
     var eventInformation;
     int currentTime = DateTime.now().millisecondsSinceEpoch;
     bool fitsCriteria = false;
