@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:intl_phone_field/phone_number.dart';
+
+import 'main.dart';
 
 String getUID() {
   return FirebaseAuth.instance.currentUser!.uid;
@@ -142,4 +145,53 @@ class VolunteerToLookUp
 class HospitalityToLookUp
 {
   static String hospitalityUID = "";
+}
+
+TextField formattedTextField(TextEditingController tEC, String label, bool obscured, [bool expandable = false])
+{
+  return TextField(
+    controller: tEC,
+    maxLines: expandable? null: 1,
+    decoration: InputDecoration(
+      border: OutlineInputBorder(),
+      filled: true,
+      fillColor: Colors.white,
+      focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+              color: Colors.black,
+              width: 2
+          )
+      ),
+      hintText: label,
+    ),
+    obscureText: obscured,
+  );
+}
+
+Widget backgroundGradient(Widget content) {
+  return Container(
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.blue,
+            ColorPalette.backgroundColor,
+          ]
+      ),
+    ),
+    child: content
+  );
+}
+
+ButtonStyle formattedButtonStyle()
+{
+  return ElevatedButton.styleFrom(
+      shape: StadiumBorder(),
+      primary: ColorPalette.mainColor,
+      textStyle: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold
+          )
+  );
 }

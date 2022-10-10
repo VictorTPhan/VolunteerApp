@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:volunteer_app/helper.dart';
-import 'package:volunteer_app/hospitality_dash.dart';
+import 'package:volunteer_app/hospitality/hospitality_dash.dart';
+import 'package:volunteer_app/main.dart';
 import 'package:volunteer_app/signup.dart';
-import 'package:volunteer_app/volunteer_dash.dart';
+import 'package:volunteer_app/volunteer/volunteer_dash.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -51,73 +52,79 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 25,
-            child: Center(
-              child: Text(
-                  "APP NAME",
-                   style: TextStyle(
-                     fontSize: 50,
-                     fontWeight: FontWeight.bold
-                   ),
+      backgroundColor: ColorPalette.backgroundColor,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.blue,
+              ColorPalette.backgroundColor,
+            ]
+          ),
+        ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 50,
+                child: Padding(
+                  padding: const EdgeInsets.all(40.0),
+                  child: Image.asset("assets/logo.png"),
+                ),
               ),
-            ),
-          ),
-          Expanded(
-            flex: 25,
-            child: Column(
-              children: [
-                TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Email',
-                  ),
-                ),
-                TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Password',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (!signInValid)
-            Text("Could not sign you in"),
-          Expanded(
-            flex: 25,
-            child: Column(
-              children: [
-                ElevatedButton(
-                    onPressed: () {
-                      signIn();
-                    },
-                    child: Text("Sign In")
-                ),
-                TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SignUp()),
-                      );
-                    },
-                    child: Text("Create Account")
+              Expanded(
+                flex: 25,
+                child: Column(
+                  children: [
+                    formattedTextField(emailController, "Email", false),
+                    formattedTextField(passwordController, "Password", true)
+                  ]
                 )
-              ],
-            ),
+              ),
+              if (!signInValid)
+                Text(
+                    "Incorrect username or password!",
+                  style: TextStyle(
+                    color: Colors.black,
+                    backgroundColor: Colors.yellow,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20
+                  ),
+                ),
+              Expanded(
+                flex: 25,
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          signIn();
+                        },
+                        child: Text("Sign In"),
+                        style: formattedButtonStyle()
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SignUp()),
+                          );
+                        },
+                        child: Text(
+                            "Create Account",
+                          style: TextStyle(
+                            color: ColorPalette.mainColor,
+                            fontSize: 23
+                          ),
+                        )
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            flex: 25,
-              child: Container()
-          )
-        ],
-      ),
+        ),
     );
   }
 }

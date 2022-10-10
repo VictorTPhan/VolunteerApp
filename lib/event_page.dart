@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:volunteer_app/main.dart';
 
 import 'helper.dart';
 
@@ -55,24 +56,45 @@ class EventViewState extends State<EventView> {
       child: Column(
         children: [
           Expanded(
+            flex: 7,
+            child: Text(
+              eventInformation.name,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 40,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+          ),
+          Expanded(
               flex: 25,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
+                  decoration: BoxDecoration(
+                      color: ColorPalette.backgroundColor,
+                      border: Border.all(
+                        width: 4.0,
+                        color: Colors.black,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(20))
+                  ),
                   width: double.infinity,
-                  color: Colors.lightBlueAccent[100],
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          "Description",
-                          style: label
-                      ),
-                      Text(
-                          "        " + eventInformation.description,
-                          style: info
-                      ),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            "Description",
+                            style: label
+                        ),
+                        Text(
+                            "        " + eventInformation.description,
+                            style: info
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -83,19 +105,29 @@ class EventViewState extends State<EventView> {
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   width: double.infinity,
-                  color: Colors.lightBlueAccent[100],
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          "Requirement",
-                          style: label
+                  decoration: BoxDecoration(
+                      color: ColorPalette.backgroundColor,
+                      border: Border.all(
+                        width: 4.0,
+                        color: Colors.black,
                       ),
-                      Text(
-                          eventInformation.requirement,
-                          style: info
-                      ),
-                    ],
+                      borderRadius: BorderRadius.all(Radius.circular(20))
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            "Requirement",
+                            style: label
+                        ),
+                        Text(
+                            "        " + eventInformation.requirement,
+                            style: info
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -106,31 +138,41 @@ class EventViewState extends State<EventView> {
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 width: double.infinity,
-                color: Colors.lightBlueAccent[100],
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "General Information",
-                      style: label,
+                decoration: BoxDecoration(
+                    color: ColorPalette.backgroundColor,
+                    border: Border.all(
+                      width: 4.0,
+                      color: Colors.black,
                     ),
-                    Text(
-                      eventInformation.startDate,
-                      style: info,
-                    ),
-                    Text(
-                      eventInformation.startTime + " to " + eventInformation.endTime,
-                      style: info,
-                    ),
-                    Text(
-                      eventInformation.location,
-                      style: info,
-                    ),
-                    Text(
-                      "spots: " + eventInformation.spots.toString(),
-                      style: info,
-                    ),
-                  ],
+                    borderRadius: BorderRadius.all(Radius.circular(20))
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "General Information",
+                        style: label,
+                      ),
+                      Text(
+                        eventInformation.startDate,
+                        style: info,
+                      ),
+                      Text(
+                        eventInformation.startTime + " to " + eventInformation.endTime,
+                        style: info,
+                      ),
+                      Text(
+                        eventInformation.location,
+                        style: info,
+                      ),
+                      Text(
+                        "Spots: " + eventInformation.spots.toString(),
+                        style: info,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -143,10 +185,7 @@ class EventViewState extends State<EventView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(eventInformation.name),
-      ),
-      body: scaffoldBody()
+      body: backgroundGradient(scaffoldBody())
     );
   }
 }

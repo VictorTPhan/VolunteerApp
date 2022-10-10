@@ -11,6 +11,11 @@ void main() async {
   runApp(const MyApp());
 }
 
+class ColorPalette {
+  static Color mainColor = Color(0xFF0086D9);
+  static Color backgroundColor = Color(0xFFF1E7FF);
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -20,9 +25,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Volunteer App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: const Login(),
     );
   }

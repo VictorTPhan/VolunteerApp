@@ -2,10 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:volunteer_app/helper.dart';
-import 'package:volunteer_app/hospitality_dash.dart';
-import 'package:volunteer_app/hospitality_form.dart';
-import 'package:volunteer_app/volunteer_dash.dart';
-import 'package:volunteer_app/volunteer_form.dart';
+import 'package:volunteer_app/hospitality/hospitality_dash.dart';
+import 'package:volunteer_app/hospitality/hospitality_form.dart';
+import 'package:volunteer_app/main.dart';
+import 'package:volunteer_app/volunteer/volunteer_dash.dart';
+import 'package:volunteer_app/volunteer/volunteer_form.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -68,55 +69,45 @@ class _SignUpState extends State<SignUp> {
       appBar: AppBar(
         title: Text("Sign Up"),
       ),
-      body: Column(
-        children: [
-          TextField(
-            controller: emailController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Email',
+      body: backgroundGradient(
+        Column(
+          children: [
+            formattedTextField(emailController, "Email", false),
+            formattedTextField(passwordController, "Password", true),
+            ListTile(
+              title: Text("Volunteer"),
+              leading: Radio(
+                value: "volunteer",
+                groupValue: type,
+                onChanged: (value) {
+                  setState(() {
+                    type = value.toString();
+                  });
+                },
+              ),
             ),
-          ),
-          TextField(
-            controller: passwordController,
-            obscureText: true,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Password',
+            ListTile(
+              title: Text("Hospitality"),
+              leading: Radio(
+                value: "hospitality",
+                groupValue: type,
+                onChanged: (value) {
+                  setState(() {
+                    type = value.toString();
+                  });
+                },
+              ),
             ),
-          ),
-          ListTile(
-            title: Text("Volunteer"),
-            leading: Radio(
-              value: "volunteer",
-              groupValue: type,
-              onChanged: (value) {
-                setState(() {
-                  type = value.toString();
-                });
-              },
-            ),
-          ),
-          ListTile(
-            title: Text("Hospitality"),
-            leading: Radio(
-              value: "hospitality",
-              groupValue: type,
-              onChanged: (value) {
-                setState(() {
-                  type = value.toString();
-                });
-              },
-            ),
-          ),
-          if (!validSignUp)
-            Text("Could not sign up your account"),
-          ElevatedButton(
-            onPressed: signUp,
-            child: Text("Sign Up"),
-          )
-        ],
-      ),
+            if (!validSignUp)
+              Text("Could not sign up your account"),
+            ElevatedButton(
+              onPressed: signUp,
+              style: formattedButtonStyle(),
+              child: Text("Sign Up"),
+            )
+          ],
+        ),
+      )
     );
   }
 }
