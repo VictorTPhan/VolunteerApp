@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:volunteer_app/helper.dart';
-import 'package:volunteer_app/hospitality/hospitality_deletion.dart';
+import 'package:volunteer_app/hospitality/hospitality_account_settings.dart';
 import 'package:volunteer_app/hospitality/hospitality_info.dart';
 import 'package:volunteer_app/main.dart';
 
@@ -17,79 +17,82 @@ class HospitalityDash extends StatefulWidget {
 class _HospitalityState extends State<HospitalityDash> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: backgroundGradient(
-        Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  height: 90,
-                  width: 300,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HospitalityEventView()),
-                      );
-                    },
-                    child: Text("Viewing Events"),
-                    style: formattedButtonStyle()
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  height: 90,
-                  width: 300,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HospitalityEventUpload()),
-                      );
-                    },
-                    child: Text("Uploading Events"),
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: Scaffold(
+        body: backgroundGradient(
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    height: 90,
+                    width: 300,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HospitalityEventView()),
+                        );
+                      },
+                      child: Text("Viewing Events"),
                       style: formattedButtonStyle()
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  height: 90,
-                  width: 300,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      HospitalityToLookUp.hospitalityUID = getUID();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HospitalityInfo()),
-                      );
-                    },
-                    child: Text("View Profile"),
-                      style: formattedButtonStyle()
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    height: 90,
+                    width: 300,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HospitalityEventUpload()),
+                        );
+                      },
+                      child: Text("Uploading Events"),
+                        style: formattedButtonStyle()
+                    ),
                   ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    height: 90,
+                    width: 300,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        HospitalityToLookUp.hospitalityUID = getUID();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HospitalityInfo()),
+                        );
+                      },
+                      child: Text("View Profile"),
+                        style: formattedButtonStyle()
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: ColorPalette.mainColor,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const HospitalityDeletion()),
-          );
-        },
-        child: Icon(
-            Icons.settings,
-            color: Colors.white,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: ColorPalette.mainColor,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HospitalityDeletion()),
+            );
+          },
+          child: Icon(
+              Icons.settings,
+              color: Colors.white,
+          ),
         ),
       ),
     );

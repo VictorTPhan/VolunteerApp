@@ -38,18 +38,19 @@ class _HospitalityEventVolunteersState extends State<HospitalityEventVolunteers>
         then((event) {
           var info = event.snapshot.value as Map;
 
-          setState(() {
-            users.add(
-                VolunteerData(
-                    UID,
-                    info["name"],
-                    info["description"],
-                    info["phone number"],
-                    info["instrument"],
-                    int.parse(info["age"])
-                )
-            );
-          });
+          if (mounted)
+            setState(() {
+              users.add(
+                  VolunteerData(
+                      UID,
+                      info["name"],
+                      info["description"],
+                      info["phone number"],
+                      info["instrument"],
+                      int.parse(info["age"])
+                  )
+              );
+            });
         }).catchError((error) {
           print("could not fetch user data for user " + UID + ": " + error.toString());
         });
@@ -132,9 +133,10 @@ class _HospitalityEventVolunteersState extends State<HospitalityEventVolunteers>
                           style: formattedButtonStyle(),
                           onPressed: () {
                             removeVolunteer(users[index].UID).then((value) {
-                              setState(() {
-                                users.remove(users[index]);
-                              });
+                              if (mounted)
+                                setState(() {
+                                  users.remove(users[index]);
+                                });
                             });
                           },
                           child: Text("Remove")

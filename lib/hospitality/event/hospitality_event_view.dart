@@ -27,11 +27,12 @@ class _HospitalityEventViewState extends State<HospitalityEventView> {
     then((event) {
       var info = event.snapshot.value as Map;
 
-      setState(() {
-        info.forEach((key, value) {
-          timeStamps.add(int.parse(key));
+      if (mounted)
+        setState(() {
+          info.forEach((key, value) {
+            timeStamps.add(int.parse(key));
+          });
         });
-      });
 
     }).catchError((error) {
       print("could not fetch events: " + error.toString());
@@ -92,16 +93,18 @@ class _HospitalityEventViewState extends State<HospitalityEventView> {
       print("There are no volunteers for: " + getUID() + " " + timeStamp);
     });
 
-    setState(() {
-      if (eventInformation != null) eventInfo.add(eventInformation);
-    });
+    if (mounted)
+      setState(() {
+        if (eventInformation != null) eventInfo.add(eventInformation);
+      });
   }
 
   Future<void> deleteEvent(int timeStamp) async{
     await FirebaseDatabase.instance.ref().child("Events").child(getUID()).child(timeStamp.toString()).remove().then((value) async{
-      setState(() {
-        eventInfo.clear();
-      });
+      if (mounted)
+        setState(() {
+          eventInfo.clear();
+        });
       await fetchEventInfo();
     });
   }

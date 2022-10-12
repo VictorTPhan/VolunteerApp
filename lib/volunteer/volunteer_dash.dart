@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:volunteer_app/volunteer/volunteer_info.dart';
-import 'package:volunteer_app/volunteer/volunteer_deletion.dart';
+import 'package:volunteer_app/volunteer/volunteer_account_settings.dart';
 import 'package:volunteer_app/volunteer/event/volunteer_event_find.dart';
 import 'package:volunteer_app/volunteer/event/volunteer_event_view.dart';
 
@@ -25,7 +25,6 @@ class _VolunteerDashState extends State<VolunteerDash> {
 
   List<EventLookup> eventLookups = [];
   List<EventInformation> eventInfo = [];
-  List<int> upcomingTimes = [];
 
   _VolunteerDashState() {
     fetchSignedUpEvents();
@@ -117,146 +116,147 @@ class _VolunteerDashState extends State<VolunteerDash> {
       });
 
       //look up the event at the specified timestamp
-      setState(() {
-        eventLookups.add(EventLookup(timeStamp, UID));
-        eventInfo.add(eventInformation);
-        upcomingTimes.add(DateTime.now().difference(eventEndTime).inDays);
-      });
+      if (mounted)
+        setState(() {
+          eventLookups.add(EventLookup(timeStamp, UID));
+          eventInfo.add(eventInformation);
+        });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Volunteer Dash"),
-      ),
-      body: backgroundGradient(
-        Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                flex: 50,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: 70,
-                        width: 300,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const VolunteerEventView()),
-                            );
-                          },
-                          child: Text("Viewing Events"),
-                          style: formattedButtonStyle()
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: 70,
-                        width: 300,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const VolunteerEventFind()),
-                            );
-                          },
-                          child: Text("Finding Events"),
-                            style: formattedButtonStyle()
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: 70,
-                        width: 300,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            VolunteerToLookUp.volunteerUID = getUID();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const VolunteerInfo()),
-                            );
-                          },
-                          child: Text("Viewing User Info"),
-                            style: formattedButtonStyle()
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Text(
-                "Upcoming Events",
-                style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold
-                ),
-              ),
-              Expanded(
-                flex: 50,
-                child: (eventInfo.isEmpty)
-                    ?Text("You haven't signed up for any events yet.")
-                    :ListView.separated(
-                  padding: const EdgeInsets.all(8),
-                  itemCount: eventInfo.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                          color: ColorPalette.backgroundColor,
-                          border: Border.all(
-                            width: 4.0,
-                            color: Colors.black,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(20))
-                      ),
-                      child: Padding(
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: backgroundGradient(
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 50,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              eventInfo[index].name,
-                              style: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold
-                              ),
-                            ),
-                            Text(
-                              upcomingTimes[index] == 0? "Today": "In " + upcomingTimes[index].toString() + " days",
-                              style: TextStyle(
-                                fontSize: 20
-                              ),
-                            )
-                          ],
+                        child: Container(
+                          height: 70,
+                          width: 300,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const VolunteerEventView()),
+                              );
+                            },
+                            child: Text("Viewing Events"),
+                            style: formattedButtonStyle()
+                          ),
                         ),
                       ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) => const Divider(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          height: 70,
+                          width: 300,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const VolunteerEventFind()),
+                              );
+                            },
+                            child: Text("Finding Events"),
+                              style: formattedButtonStyle()
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          height: 70,
+                          width: 300,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              VolunteerToLookUp.volunteerUID = getUID();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const VolunteerInfo()),
+                              );
+                            },
+                            child: Text("Viewing User Info"),
+                              style: formattedButtonStyle()
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              )
-            ],
+                Text(
+                  "Upcoming Events",
+                  style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+                Expanded(
+                  flex: 50,
+                  child: (eventInfo.isEmpty)
+                      ?Text("You haven't signed up for any events yet.")
+                      :ListView.separated(
+                    padding: const EdgeInsets.all(8),
+                    itemCount: eventInfo.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                            color: ColorPalette.backgroundColor,
+                            border: Border.all(
+                              width: 4.0,
+                              color: Colors.black,
+                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(20))
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                eventInfo[index].name,
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold
+                                ),
+                              ),
+                              Text(
+                                "on " + eventInfo[index].startDate + ", at " + eventInfo[index].startTime,
+                                style: TextStyle(
+                                  fontSize: 20
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) => const Divider(),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const VolunteerDeletion()),
-          );
-        },
-        child: Icon(Icons.settings),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const VolunteerDeletion()),
+            );
+          },
+          child: Icon(Icons.settings),
+        ),
       ),
     );
   }

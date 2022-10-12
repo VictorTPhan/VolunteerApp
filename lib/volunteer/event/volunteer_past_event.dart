@@ -107,10 +107,11 @@ class _VolunteerPastEventState extends State<VolunteerPastEvent> {
         });
 
         //look up the event at the specified timestamp
-        setState(() {
-          eventLookups.add(EventLookup(timeStamp, UID));
-          eventInfo.add(eventInformation);
-        });
+        if (mounted)
+          setState(() {
+            eventLookups.add(EventLookup(timeStamp, UID));
+            eventInfo.add(eventInformation);
+          });
       }
   }
 

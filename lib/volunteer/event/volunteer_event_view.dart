@@ -130,11 +130,12 @@ class _VolunteerEventViewState extends State<VolunteerEventView> {
       });
 
       //look up the event at the specified timestamp
-      setState(() {
-        eventLookups.add(EventLookup(timeStamp, UID));
-        eventInfo.add(eventInformation);
-        amountOfPastEvents;
-      });
+      if (mounted)
+        setState(() {
+          eventLookups.add(EventLookup(timeStamp, UID));
+          eventInfo.add(eventInformation);
+          amountOfPastEvents;
+        });
     }
   }
 
@@ -153,10 +154,11 @@ class _VolunteerEventViewState extends State<VolunteerEventView> {
       print("Could not update list: " + error.toString());
     });
 
-    setState(() {
-      eventInfo.removeAt(index);
-      eventLookups.removeAt(index);
-    });
+    if (mounted)
+      setState(() {
+        eventInfo.removeAt(index);
+        eventLookups.removeAt(index);
+      });
   }
 
   @override

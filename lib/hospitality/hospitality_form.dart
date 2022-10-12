@@ -48,73 +48,77 @@ class _HospitalityFormState extends State<HospitalityForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Let's get to know you!"),
-      ),
-      body: Column(
-        children: [
-          TextField(
-            controller: nameController,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Name"
-            ),
-          ),
-          TextField(
-            maxLines: null,
-            controller: descriptionController,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Description (optional)"
-            ),
-          ),
-          IntlPhoneField(
-            decoration: InputDecoration(
-              labelText: 'Phone Number',
-              border: OutlineInputBorder(
-                borderSide: BorderSide(),
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text("Let's get to know you!"),
+        ),
+        body: Column(
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Name"
               ),
             ),
-            onChanged: (phone) {
-              setState(() {
-                phoneNumber = phone.number;
-              });
-            },
-            onCountryChanged: (country) {
-              print('Country changed to: ' + country.name);
-            },
-          ),
-          TextField(
-            controller: addressController,
-            maxLines: null,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Address"
+            TextField(
+              maxLines: null,
+              controller: descriptionController,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Description (optional)"
+              ),
             ),
-          ),
-
-          if (formCompleted == false)
-            Text("You must fill in required parts of the form!"),
-          ElevatedButton(
-              onPressed: () {
+            IntlPhoneField(
+              decoration: InputDecoration(
+                labelText: 'Phone Number',
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(),
+                ),
+              ),
+              onChanged: (phone) {
                 setState(() {
-                  formCompleted = validate(
-                      [
-                        nameController.text,
-                        addressController.text,
-                        phoneNumber
-                      ]
-                  );
-
-                  if (formCompleted){
-                    updateInfo();
-                  }
+                  phoneNumber = phone.number;
                 });
               },
-              child: Text("Complete")
-          )
-        ],
+              onCountryChanged: (country) {
+                print('Country changed to: ' + country.name);
+              },
+            ),
+            TextField(
+              controller: addressController,
+              maxLines: null,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Address"
+              ),
+            ),
+
+            if (formCompleted == false)
+              Text("You must fill in required parts of the form!"),
+            ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    formCompleted = validate(
+                        [
+                          nameController.text,
+                          addressController.text,
+                          phoneNumber
+                        ]
+                    );
+
+                    if (formCompleted){
+                      updateInfo();
+                    }
+                  });
+                },
+                child: Text("Complete")
+            )
+          ],
+        ),
       ),
     );
   }

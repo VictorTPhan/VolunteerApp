@@ -51,81 +51,85 @@ class _VolunteerFormState extends State<VolunteerForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Let's get to know you!"),
-      ),
-      body: Column(
-        children: [
-          TextField(
-            controller: nameController,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Name"
-            ),
-          ),
-          TextField(
-            maxLines: null,
-            controller: descriptionController,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Description (optional)"
-            ),
-          ),
-          IntlPhoneField(
-            decoration: InputDecoration(
-              labelText: 'Phone Number',
-              border: OutlineInputBorder(
-                borderSide: BorderSide(),
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Let's get to know you!"),
+          automaticallyImplyLeading: false,
+        ),
+        body: Column(
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Name"
               ),
             ),
-            onChanged: (phone) {
-              setState(() {
-                phoneNumber = phone.number;
-              });
-            },
-            onCountryChanged: (country) {
-              print('Country changed to: ' + country.name);
-            },
-          ),
-          TextField(
-            controller: ageController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Age"
+            TextField(
+              maxLines: null,
+              controller: descriptionController,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Description (optional)"
+              ),
             ),
-          ),
-          TextField(
-            controller: instrumentController,
-            maxLines: null,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Instrument"
-            ),
-          ),
-          if (formCompleted == false)
-            Text("You must fill in all parts of the form!"),
-          ElevatedButton(
-              onPressed: () {
+            IntlPhoneField(
+              decoration: InputDecoration(
+                labelText: 'Phone Number',
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(),
+                ),
+              ),
+              onChanged: (phone) {
                 setState(() {
-                  formCompleted = validate(
-                    [
-                      nameController.text,
-                      ageController.text,
-                      instrumentController.text,
-                      phoneNumber
-                    ]
-                  );
-
-                  if (formCompleted){
-                    updateInfo();
-                  }
+                  phoneNumber = phone.number;
                 });
               },
-              child: Text("Complete")
-          )
-        ],
+              onCountryChanged: (country) {
+                print('Country changed to: ' + country.name);
+              },
+            ),
+            TextField(
+              controller: ageController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Age"
+              ),
+            ),
+            TextField(
+              controller: instrumentController,
+              maxLines: null,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Instrument"
+              ),
+            ),
+            if (formCompleted == false)
+              Text("You must fill in all parts of the form!"),
+            ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    formCompleted = validate(
+                      [
+                        nameController.text,
+                        ageController.text,
+                        instrumentController.text,
+                        phoneNumber
+                      ]
+                    );
+
+                    if (formCompleted){
+                      updateInfo();
+                    }
+                  });
+                },
+                child: Text("Complete")
+            )
+          ],
+        ),
       ),
     );
   }

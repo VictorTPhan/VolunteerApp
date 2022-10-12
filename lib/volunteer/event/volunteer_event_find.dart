@@ -37,10 +37,11 @@ class _VolunteerEventFindState extends State<VolunteerEventFind> {
           if (!signedUp)
             {
               //add timestamp to list
-              setState(() {
-                eventLookups.add(EventLookup(timestamp, UID));
-                print("added: " + timestamp + " " + UID);
-              });
+              if (mounted)
+                setState(() {
+                  eventLookups.add(EventLookup(timestamp, UID));
+                  print("added: " + timestamp + " " + UID);
+                });
 
               await fetchEventData(UID, timestamp);
             }
@@ -140,9 +141,10 @@ class _VolunteerEventFindState extends State<VolunteerEventFind> {
       print("There are no volunteers for: " + UID + " " + timeStamp);
     });
 
-    setState(() {
-      if (eventInformation != null) eventInfo.add(eventInformation);
-    });
+    if (mounted)
+      setState(() {
+        if (eventInformation != null) eventInfo.add(eventInformation);
+      });
   }
 
   void checkIfCanSignUp(String UID, String timeStamp, EventInformation eventInfo, int index) async {
